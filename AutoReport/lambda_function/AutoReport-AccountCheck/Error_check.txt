@@ -1,0 +1,14 @@
+Invalid length for parameter RoleSessionName, value: 0, valid min length: 2
+= 고객사 Account가 입력되지 않음
+
+
+[{}({})] assume_role Check: Failed. // error: {}
+= 고객사 계정에 assume_role이 설정되지 않음 (Cfn이 잘못 등록됨)
+
+
+[{}] - Project Listup: Failed. // error: {}]
+= PMS 등록 정보가 누락되거나 잘못됨
+
+
+[{}] - Get Work List: Failed. // error: {}
+= PMS 업무 현황 가져오는데 누락되거나 잘못됨

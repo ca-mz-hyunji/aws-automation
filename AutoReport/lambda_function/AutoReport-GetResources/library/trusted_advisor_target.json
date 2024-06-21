@@ -1,0 +1,776 @@
+{
+	"checks": {
+		"Qch7DwouX1": {
+			"name": "사용률이 낮은 Amazon EC2 인스턴스",
+			"description": "지난 14일 동안 실행된 적이 있는 Amazon Elastic Compute Cloud(Amazon EC2) 인스턴스를 검사하여, 4일 이상 일일 CPU 사용률이 10% 이하이고 네트워크 I/O가 5MB 이하였던 경우 사용자에게 알려줍니다",
+			"metadata": ["지역/AZ", "인스턴스 ID", "인스턴스 이름", "인스턴스 유형", "예상되는 월별 절감액", "1일", "2일", "3일", "4일", "5일", "6일", "7일", "8일", "9일", "10일", "11일", "12일", "13일", "14일", "14일 평균 CPU 사용률", "14일 평균 네트워크 I/O", "사용률이 낮은 일 수"],
+			"category": "cost_optimizing",
+			"target": [3,2]
+		},
+		"hjLMh88uM8": {
+			"name": "유휴 상태의 Load Balancer",
+			"description": "자주 사용되지 않는 로드 밸런서에 대한 Elastic Load Balancing 구성을 검사합니다",
+			"metadata": ["지역", "Load Balancer 이름", "사유", "예상되는 월별 절감액"],
+			"category": "cost_optimizing",
+			"target": [2]
+		},
+		"DAvU99Dc4C": {
+			"name": "사용률이 낮은 Amazon EBS 볼륨",
+			"description": "Amazon Block Store(Amazon EBS) 볼륨 구성을 검사하며 볼륨이 사용되지 않는 것으로 보이는 경우 경고합니다",
+			"metadata": ["지역", "볼륨 ID", "볼륨 이름", "볼륨 유형", "볼륨 크기", "월별 스토리지 비용", "스냅샷 ID", "스냅샷 이름", "스냅샷 경과 시간"],
+			"category": "cost_optimizing",
+			"target": [3,2]
+		},
+		"Z4AUBRNSmz": {
+			"name": "연결되지 않은 탄력적 IP 주소",
+			"description": "실행 중인 Amazon Elastic Compute Cloud(Amazon EC2) 인스턴스와 연결되지 않은 탄력적 IP 주소(EIP)를 검사합니다",
+			"metadata": ["지역", "IP 주소"],
+			"category": "cost_optimizing",
+			"target": [2]
+		},
+		"HCP4007jGY": {
+			"name": "보안 그룹 – 제한 없는 특정 포트",
+			"description": "보안 그룹을 검사하여 특정 포트에 대한 제한 없는 액세스(0.0.0.0/0)를 허용하는 규칙이 있는지 확인합니다",
+			"metadata": ["지역", "보안 그룹 이름", "보안 그룹 ID", "프로토콜", "상태", "포트"],
+			"category": "security",
+			"target": [2, 6]
+		},
+		"1iG5NDGVre": {
+			"name": "보안 그룹 – 제한 없는 액세스",
+			"description": "보안 그룹을 검사하여 리소스에 대한 제한 없는 액세스를 허용하는 규칙이 있는지 확인합니다",
+			"metadata": ["리전", "보안 그룹 이름", "보안 그룹 ID", "프로토콜", "포트", "상태", "IP 범위"],
+			"category": "security",
+			"target": [2, 5]
+		},
+		"zXCkfM1nI3": {
+			"name": "IAM 사용",
+			"description": "이 검사는 하나 이상의 IAM 사용자가 있는지 확인하여 루트 액세스를 사용하지 못하도록 하기 위한 것입니다",
+			"metadata": [],
+			"category": "security",
+			"target": [51],
+			"jjintarget": "있음"
+		},
+		"Pfx0RwqBli": {
+			"name": "Amazon S3 버킷 권한",
+			"description": "Amazon Simple Storage Service(Amazon S3)에서 열기 액세스 권한이 부여되어 있거나 인증된 AWS 사용자에게 액세스를 허용하는 버킷을 검사합니다",
+			"metadata": ["지역 이름", "지역 API 파라미터", "버킷 이름", "ACL이 목록 허용", "ACL이 업로드/삭제를 허용함", "상태", "정책이 액세스를 허용함", "무시된 버킷 이름"],
+			"category": "security",
+			"target": [3]
+		},
+		"7DAFEmoDos": {
+			"name": "루트 계정의 MFA",
+			"description": "루트 계정을 검사하며 Multi-Factor Authentication(MFA)이 활성화되지 않은 경우 경고합니다",
+			"metadata": [],
+			"category": "security",
+			"target": [50],
+			"jjintarget": "Root 계정"
+		},
+		"Yw2K9puPzl": {
+			"name": "IAM 암호 정책",
+			"description": "계정에 대한 암호 정책을 검사하며 암호 정책이 활성화되지 않은 경우 또는 암호 콘텐츠 요구 사항이 활성화되지 않은 경우 경고합니다",
+			"metadata": ["비밀번호 정책", "대문자", "소문자", "숫자", "비 영숫자", "상태", "사유"],
+			"category": "security",
+			"target": [7],
+			"jjintarget": "사유가 중복되어 여러개 나오는 경우 다시 확인 필요"
+		},
+		"nNauJisYIT": {
+			"name": "Amazon RDS 보안 그룹 액세스 위험",
+			"description": "Amazon Relational Database Service(Amazon RDS)의 보안 그룹 구성을 검사하며 보안 그룹 규칙이 데이터베이스에 대한 액세스를 지나치게 허용하는 경우 경고합니다",
+			"metadata": ["지역", "RDS 보안 그룹 이름", "수신 규칙", "상태", "사유"],
+			"category": "security",
+			"target": [3]
+		},
+		"H7IgTzjTYb": {
+			"name": "Amazon EBS 스냅샷",
+			"description": "사용 가능하거나 사용 중인 Amazon Elastic Block Store(Amazon EBS) 볼륨에 대한 스냅샷의 생성 후 경과 기간을 검사합니다",
+			"metadata": ["지역", "볼륨 ID", "볼륨 이름", "스냅샷 ID", "스냅샷 이름", "스냅샷 경과 시간", "볼륨 연결", "상태", "사유"],
+			"category": "fault_tolerance",
+			"target": [3, 2]
+		},
+		"wuy7G1zxql": {
+			"name": "Amazon EC2 가용 영역 분산",
+			"description": "지역 내 가용 영역 전반에 걸쳐 Amazon Elastic Compute Cloud(Amazon EC2) 인스턴스의 배포를 검사합니다",
+			"metadata": ["지역", "a 영역의 인스턴스", "b 영역의 인스턴스", "c 영역의 인스턴스", "d 영역의 인스턴스", "e 영역의 인스턴스", "f 영역의 인스턴스", "상태", "사유"],
+			"category": "fault_tolerance",
+			"target": [1]
+		},
+		"iqdCTZKCUp": {
+			"name": "Load Balancer 최적화",
+			"description": "로드 밸런서 구성을 검사합니다",
+			"metadata": ["지역", "Load Balancer 이름", "영역 개수", "a 영역의 인스턴스", "b 영역의 인스턴스", "c 영역의 인스턴스", "d 영역의 인스턴스", "e 영역의 인스턴스", "f 영역의 인스턴스", "상태", "사유"],
+			"category": "fault_tolerance",
+			"target": [2]
+		},
+		"S45wrEXrLz": {
+			"name": "VPN 터널 중복성",
+			"description": "각 VPN에 대해 활성화된 터널 수를 검사합니다",
+			"metadata": ["지역", "VPN ID", "VPC", "가상 프라이빗 게이트웨이", "고객 게이트웨이", "활성 터널", "상태", "사유"],
+			"category": "fault_tolerance",
+			"target": [2, 6]
+		},
+		"ZRxQlPsb6c": {
+			"name": "높은 사용률의 Amazon EC2 인스턴스",
+			"description": "지난 14일 동안 실행된 적이 있는 Amazon Elastic Compute Cloud(Amazon EC2) 인스턴스를 검사하여, 4일 이상 일일 CPU 사용률이 90%를 넘은 경우 사용자에게 알려줍니다",
+			"metadata": ["지역/AZ", "인스턴스 ID", "인스턴스 이름", "인스턴스 유형", "1일", "2일", "3일", "4일", "5일", "6일", "7일", "8일", "9일", "10일", "11일", "12일", "13일", "14일", "14일 평균 CPU 사용률", "CPU 사용률이 90%를 초과하는 일 수"],
+			"category": "performance",
+			"target": [3, 2]
+		},
+		"8CNsSllI5v": {
+			"name": "Auto Scaling 그룹 리소스",
+			"description": "시작 구성 및 Auto Scaling 그룹과 관련된 리소스의 가용성을 검사합니다",
+			"metadata": ["리전", "Auto Scaling 그룹 이름", "시작 구성 이름", "시작 유형", "시작 이름", "리소스 유형", "리소스 이름", "상태", "사유"],
+			"category": "fault_tolerance",
+			"target": [2]
+		},
+		"opQPADkZvH": {
+			"name": "Amazon RDS 백업",
+			"description": "Amazon RDS DB 인스턴스의 자동 백업을 검사합니다",
+			"metadata": ["지역/AZ", "DB 인스턴스", "VPC ID", "백업 보존 기간", "상태"],
+			"category": "fault_tolerance",
+			"target": [2]
+		},
+		"f2iK5R6Dep": {
+			"name": "Amazon RDS 다중 AZ",
+			"description": "단일 가용 영역에 배포된 DB 인스턴스를 검사합니다",
+			"metadata": ["지역/AZ", "DB 인스턴스", "VPC ID", "다중 AZ", "상태"],
+			"category": "fault_tolerance",
+			"target": [2]
+		},
+		"CLOG40CDO8": {
+			"name": "Auto Scaling 그룹 상태 검사",
+			"description": "Auto Scaling 그룹에 대한 상태 검사 구성을 검토합니다",
+			"metadata": ["리전", "Auto Scaling 그룹 이름", "연결된 Load Balancer", "상태 검사", "상태"],
+			"category": "fault_tolerance",
+			"target": [2]
+		},
+		"BueAdJ7NrP": {
+			"name": "Amazon S3 버킷 로깅",
+			"description": "Amazon Simple Storage Service(Amazon S3) 버킷의 로깅 구성을 검사합니다",
+			"metadata": ["지역", "버킷 이름", "대상 이름", "대상 존재함", "동일한 소유자", "쓰기가 활성화됨", "상태", "사유"],
+			"category": "fault_tolerance",
+			"target": [2]
+		},
+		"PPkZrjsH2q": {
+			"name": "Amazon EBS 프로비저닝된 IOPS(SSD) 볼륨 연결 구성",
+			"description": "프로비저닝된 IOPS(SSD) 볼륨이 EBS에 최적이 아니지만 Amazon EBS에 최적화가 가능한 Amazon Elastic Compute Cloud(Amazon EC2) 인스턴스에 연결되어 있는지 검사합니다",
+			"metadata": ["지역/AZ", "볼륨 ID", "볼륨 이름", "볼륨 연결", "인스턴스 ID", "인스턴스 유형", "EBS 최적", "상태"],
+			"category": "performance",
+			"target": [3, 2]
+		},
+		"tfg86AVHAZ": {
+			"name": "EC2 보안 그룹에 있는 과도한 수의 규칙",
+			"description": "각 Amazon Elastic Compute Cloud(EC2) 보안 그룹에서 과도한 수의 규칙이 있는지 여부를 검사합니다",
+			"metadata": ["지역", "보안 그룹 이름", "그룹 ID", "설명", "인스턴스 수", "VPC ID", "총 인바운드 규칙", "총 아웃바운드 규칙"],
+			"category": "performance",
+			"target": [2]
+		},
+		"j3DFqYTe29": {
+			"name": "인스턴스에 적용된 과도한 수의 EC2 보안 그룹 규칙",
+			"description": "과도한 수의 보안 그룹 규칙이 있는 Amazon Elastic Compute Cloud(EC2) 인스턴스를 검사합니다",
+			"metadata": ["지역", "인스턴스 ID", "인스턴스 이름", "VPC ID", "총 인바운드 규칙", "총 아웃바운드 규칙"],
+			"category": "performance",
+			"target": [3, 2]
+		},
+		"Ti39halfu8": {
+			"name": "Amazon RDS 유휴 DB 인스턴스",
+			"description": "유휴 상태로 나타나는 모든 DB 인스턴스에 대한 Amazon Relational Database Service(Amazon RDS) 구성을 검사합니다",
+			"metadata": ["지역", "DB 인스턴스 이름", "다중 AZ", "인스턴스 유형", "프로비저닝된 스토리지(GB)", "마지막 연결 이후 경과일", "예상되는 월별 절감액(온디맨드)"],
+			"category": "cost_optimizing",
+			"target": [2]
+		},
+		"B913Ef6fb4": {
+			"name": "Amazon Route 53 별칭 리소스 레코드 세트",
+			"description": "성능을 향상하고 비용을 절약하기 위해 별칭 리소스 레코드 세트로 변경할 수 있는 리소스 레코드 세트가 있는지 점검합니다",
+			"metadata": ["호스팅 영역 이름", "호스팅 영역 ID", "리소스 레코드 세트 이름", "리소스 레코드 세트 유형", "리소스 레코드 세트 식별자", "별칭 대상", "상태"],
+			"category": "performance",
+			"target": [1]
+		},
+		"cF171Db240": {
+			"name": "Amazon Route 53 이름 서버 위임",
+			"description": "도메인 등록자 또는 DNS가 올바른 Route 53 이름 서버를 사용하지 않는 Amazon Route 53 호스팅 영역을 검사합니다",
+			"metadata": ["호스팅 영역 이름", "호스팅 영역 ID", "사용된 이름 서버 위임의 수"],
+			"category": "fault_tolerance",
+			"target": [1]
+		},
+		"C056F80cR3": {
+			"name": "Amazon Route 53 High TTL 리소스 레코트 세트",
+			"description": "TTL(Time-To-Live) 값이 더 낮은 경우 유리할 수 있는 리소스 레코드 세트를 검사합니다",
+			"metadata": ["호스팅 영역 이름", "호스팅 영역 ID", "리소스 레코드 세트 이름", "리소스 레코드 세트 유형", "리소스 레코드 세트 ID", "TTL", "상태"],
+			"category": "fault_tolerance",
+			"target": [1]
+		},
+		"k3J2hns32g": {
+			"name": "과다 사용된 Amazon EBS 마그네틱 볼륨",
+			"description": "잠재적으로 사용률이 초과했으며 더 효율적인 구성을 통해 이점을 얻을 수 있는 Amazon Elastic Block Store(EBS) 마그네틱 볼륨을 검사합니다",
+			"metadata": ["지역", "볼륨 ID", "볼륨 이름", "1일", "2일", "3일", "4일", "5일", "6일", "7일", "8일", "9일", "10일", "11일", "12일", "13일", "14일", "경과한 일 수", "최대 일일 중간값", "상태"],
+			"category": "performance",
+			"target": [3, 2]
+		},
+		"796d6f3D83": {
+			"name": "CloudFront 콘텐츠 전송 최적화",
+			"description": "AWS의 글로벌 콘텐츠 전송 서비스인 Amazon CloudFront를 사용하여 Amazon Simple Storage Service(Amazon S3) 버킷에서 송신하는 데이터 속도를 높일 수 있는지를 검사합니다",
+			"metadata": ["리전", "버킷 이름", "S3 스토리지(GB)", "데이터 전송(GB)", "스토리지로의 전송 비율", "상태"],
+			"category": "performance",
+			"target": [2]
+		},
+		"51fC20e7I2": {
+			"name": "Amazon Route 53 지연 시간 리소스 레코드 세트",
+			"description": "비효율적으로 구성된 Amazon Route 53 지연 시간 레코드 세트를 검사합니다",
+			"metadata": ["호스팅 영역 이름", "호스팅 영역 ID", "리소스 레코드 세트 이름", "리소스 레코드 세트 유형"],
+			"category": "cost_optimizing",
+			"target": [1]
+		},
+		"c9D319e7sG": {
+			"name": "Amazon Route 53 MX 리소스 레코드 세트 및 발신자 정책 프레임워크",
+			"description": "각 MX 리소스 레코드 세트에 대해, TXT 또는 SPF 리소스 레코드 세트에 유효한 SPF 레코드가 포함되어 있는지 확인합니다",
+			"metadata": ["호스팅 영역 이름", "호스팅 영역 ID", "리소스 레코드 세트 이름", "상태"],
+			"category": "security",
+			"target": [1]
+		},
+		"b73EEdD790": {
+			"name": "Amazon Route 53 장애 조치 리소스 레코드 세트",
+			"description": "잘못 구성된 Amazon Route 53 장애 조치 리소스 레코드 세트를 검사합니다",
+			"metadata": ["호스팅 영역 이름", "호스팅 영역 ID", "리소스 레코드 세트 이름", "리소스 레코드 세트 유형", "사유"],
+			"category": "fault_tolerance",
+			"target": [1]
+		},
+		"Cb877eB72b": {
+			"name": "Amazon Route 53 삭제된 상태 검사",
+			"description": "삭제된 상태 확인과 연결된 리소스 레코드 세트를 검사합니다",
+			"metadata": ["호스팅 영역 이름", "호스팅 영역 ID", "리소스 레코드 세트 이름", "리소스 레코드 세트 유형", "리소스 레코드 세트 식별자"],
+			"category": "fault_tolerance",
+			"target": [1]
+		},
+		"vjafUGJ9H0": {
+			"name": "AWS CloudTrail 로깅",
+			"description": "AWS CloudTrail 로깅을 사용하지 검사합니다",
+			"metadata": ["지역", "추적 이름", "로깅 상태", "버킷 이름", "마지막 전송 오류", "상태"],
+			"category": "security",
+			"target": [1]
+		},
+		"a2sEc6ILx": {
+			"name": "ELB 리스너 보안",
+			"description": "암호화 통신을 위한 권장 보안 구성을 사용하지 않는 리스너가 포함된 로드 밸런서가 있는지 검사합니다",
+			"metadata": ["지역", "Load Balancer 이름", "Load Balancer 포트", "상태", "사유"],
+			"category": "security",
+			"target": [2]
+		},
+		"xSqX82fQu": {
+			"name": "ELB 보안 그룹",
+			"description": "보안 그룹이 누락된 상태로 구성되어 있는 로드 밸런서, 혹은 로드 밸런서에 구성되어 있지 않은 포트에 대한 액세스를 허용하는 보안 그룹으로 구성되어 있는 로드 밸런서가 있는지 검사합니다",
+			"metadata": ["지역", "Load Balancer 이름", "상태", "보안 그룹 ID", "사유"],
+			"category": "security",
+			"target": [2]
+		},
+		"xdeXZKIUy": {
+			"name": "ELB 교차 영역 로드 밸런싱",
+			"description": "영역 간 로드 밸런싱이 비활성화되어 있으면 고르지 않은 트래픽 분산이나 백엔드 오버로딩으로 인해 서비스 가용성 손실이 발생할 위험이 있습니다",
+			"metadata": ["지역", "Load Balancer 이름", "상태", "사유"],
+			"category": "fault_tolerance",
+			"target": [2]
+		},
+		"7qGXsKIUw": {
+			"name": "ELB 연결 드레이닝",
+			"description": "Connection Draining이 활성화되지 않은 로드 밸런서가 있는지 검사합니다",
+			"metadata": ["지역", "Load Balancer 이름", "상태", "사유"],
+			"category": "fault_tolerance",
+			"target": [2]
+		},
+		"N415c450f2": {
+			"name": "CloudFront 헤더 전달 및 캐시 적중률",
+			"description": "CloudFront가 현재 클라이언트에서 수신하여 오리진 서버로 전송하고 있는 HTTP 요청 헤더를 검사합니다",
+			"metadata": ["상태", "배포 ID", "배포 도메인 이름", "캐시 동작 경로 패턴", "헤더"],
+			"category": "performance",
+			"target": [3]
+		},
+		"N425c450f2": {
+			"name": "IAM 인증서 스토어의 CloudFront 사용자 정의 SSL 인증서",
+			"description": "IAM 인증서 스토어에서 SSL 인증서에 CloudFront 대체 도메인 이름이 있는지 확인하여 인증서의 만료 또는 만료 예정 여부, 유효 기간이 지난 암호 사용 여부, 배포에 부적합한 구성 여부 등을 알립니다",
+			"metadata": ["상태", "배포 ID", "배포 도메인 이름", "인증서 이름", "사유"],
+			"category": "security",
+			"target": [3]
+		},
+		"N430c450f2": {
+			"name": "오리진 서버의 CloudFront SSL 인증서",
+			"description": "오리진 서버에 이미 만료되었거나 만료가 임박하거나 누락되었거나 유효 기간이 지난 암호를 사용하는 SSL 인증서가 있는지 검사합니다",
+			"metadata": ["상태", "배포 ID", "배포 도메인 이름", "오리진", "사유"],
+			"category": "security",
+			"target": [3]
+		},
+		"Bh2xRR2FGH": {
+			"description": "연결된 Amazon EC2 인스턴스의 최대 처리량 용량에 의해 성능이 영향을 받을 수 있는 Amazon EBS 볼륨이 있는지 검사합니다",
+			"metadata": ["지역", "인스턴스 ID", "인스턴스 유형", "상태", "최대 처리량에 근접했던 시간"],
+			"category": "performance",
+			"target": [2]
+		},
+		"N420c450f2": {
+			"name": "CloudFront 대체 도메인 이름",
+			"description": "DNS 설정이 잘못 구성된 대체 도메인 이름(CNAME)이 있는지 Amazon CloudFront 배포를 검사합니다",
+			"metadata": ["상태", "배포 ID", "배포 도메인 이름", "대체 도메인 이름", "사유"],
+			"category": "performance",
+			"target": [3]
+		},
+		"DqdJqYeRm5": {
+			"name": "IAM 액세스 키 교체",
+			"description": "최근 90일간 교체되지 않은 활성 IAM 액세스 키가 있는지 검사합니다",
+			"metadata": ["상태", "IAM 사용자", "액세스 키", "마지막으로 교체된 키", "사유"],
+			"category": "security",
+			"target": [2]
+		},
+		"12Fnkpl8Y5": {
+			"name": "노출된 액세스 키",
+			"description": "많이 사용되는 코드 리포지토리를 검사하여 퍼블릭에 노출된 액세스 키가 있는지, 손상된 액세스 키로 인한 불규칙한 Amazon Elastic Compute Cloud(Amazon EC2) 사용량이 있는지 검사합니다",
+			"metadata": ["액세스 키 ID", "사용자 이름(IAM 또는 Root)", "부정 행위 유형", "케이스 ID", "업데이트 시간", "위치", "기한", "사용량(1일당 USD)"],
+			"category": "security",
+			"target": [2]
+		},
+		"G31sQ1E9U": {
+			"name": "사용률이 낮은 Amazon Redshift 클러스터",
+			"description": "사용률이 낮은 것으로 보이는 클러스터의 Amazon Redshift 구성을 검사합니다",
+			"metadata": ["상태", "지역", "클러스터", "인스턴스 유형", "사유", "예상되는 월별 절감액"],
+			"category": "cost_optimizing",
+			"target": [3]
+		},
+		"1e93e4c0b5": {
+			"name": "Amazon EC2 예약 인스턴스 임대 만료",
+			"description": "앞으로 30일 이내에 만료될 예정이거나 이전 30일 이내에 만료된 Amazon EC2 예약 인스턴스가 있는지 검사합니다",
+			"metadata": ["상태", "영역", "인스턴스 유형", "플랫폼", "인스턴스 수", "현재 월별 비용", "예상되는 월별 절감액", "만료 날짜", "예약 인스턴스 ID", "사유"],
+			"category": "cost_optimizing",
+			"target": [3, 1]
+		},
+		"R365s2Qddf": {
+			"name": "Amazon S3 버킷 버전 관리",
+			"description": "버전 관리가 활성화되지 않았거나 버전 관리가 중지된 Amazon Simple Storage Service 버킷이 있는지 검사합니다",
+			"metadata": ["지역", "버킷 이름", "버전 관리", "MFA Delete 활성", "상태"],
+			"category": "fault_tolerance",
+			"target": [2]
+		},
+		"0t121N1Ty3": {
+			"name": "AWS Direct Connect 연결 중복성",
+			"description": "하나의 AWS Direct Connect 연결만 있는 지역을 검사합니다",
+			"metadata": ["상태", "지역", "타임스탬프", "위치", "연결 ID"],
+			"category": "fault_tolerance",
+			"target": [5, 1]
+		},
+		"8M012Ph3U5": {
+			"name": "AWS Direct Connect 위치 중복성",
+			"description": "하나 이상의 AWS Direct Connect 연결 및 하나의 AWS Direct Connect 위치만 있는 지역을 검사합니다",
+			"metadata": ["상태", "지역", "타임스탬프", "위치", "연결 세부 정보"],
+			"category": "fault_tolerance",
+			"target": [2]
+		},
+		"4g3Nt5M1Th": {
+			"name": "AWS Direct Connect 가상 인터페이스 중복",
+			"description": "두 개 이상의 Direct Connect 연결에 대해 구성되지 않은 AWS Direct Connect VIF(가상 인터페이스)가 있는 가상 프라이빗 게이트웨이를 검사합니다",
+			"metadata": ["상태", "지역", "타임스탬프", "게이트웨이 ID", "VIF 위치", "VIF 연결 ID"],
+			"category": "fault_tolerance",
+			"target": [6]
+		},
+		"xuy7H1avtl": {
+			"name": "Amazon Aurora DB 인스턴스 접근성",
+			"description": "Amazon Aurora DB 클러스터에 프라이빗과 퍼블릭 인스턴스가 모두 있는 경우가 있는지 검사합니다",
+			"metadata": ["상태", "리전", "클러스터", "퍼블릭 DB 인스턴스", "프라이빗 DB 인스턴스", "사유"],
+			"category": "fault_tolerance",
+			"target": [3]
+		},
+		"ePs02jT06w": {
+			"name": "Amazon EBS 퍼블릭 스냅샷",
+			"description": "Amazon Elastic Block Store(Amazon EBS) 볼륨 스냅샷에 대한 권한 설정을 검사하여 퍼블릭으로 표시된 스냅샷 유무를 사용자에게 알립니다",
+			"metadata": ["상태", "지역", "볼륨 ID", "스냅샷 ID", "설명"],
+			"category": "security",
+			"target": [2]
+		},
+		"rSs93HQwa1": {
+			"name": "Amazon RDS 퍼블릭 스냅샷",
+			"description": "Amazon Relational Database Service(Amazon RDS) DB 스냅샷에 대한 권한 설정을 검사하여 퍼블릭으로 표시된 스냅샷 유무를 사용자에게 알립니다",
+			"metadata": ["상태", "지역", "DB 인스턴스 또는 클러스터 ID", "스냅샷 ID"],
+			"category": "security",
+			"target": [3]
+		},
+		"0Xc6LMYG8P": {
+			"name": "EC2 온디맨드 인스턴스",
+			"description": "EC2 온디맨드 인스턴스 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"hJ7NN0l7J9": {
+			"name": "SES 일일 발신 할당량",
+			"description": "SES 일일 발신 할당량 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"tV7YY0l7J9": {
+			"name": "EBS 프로비저닝된 IOPS(SSD) 볼륨 총 IOPS",
+			"description": "EBS 프로비저닝된 IOPS(SSD) 볼륨 총 IOPS 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"gI7MM0l7J9": {
+			"name": "EBS 프로비저닝된 IOPS SSD(io1) 볼륨 스토리지",
+			"description": "EBS 프로비저닝된 IOPS SSD(io1) 볼륨 스토리지 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"eI7KK0l7J9": {
+			"name": "EBS 활성 스냅샷",
+			"description": "EBS 활성 스냅샷 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"dH7RR0l6J9": {
+			"name": "EBS 범용 SSD(gp2) 볼륨 스토리지",
+			"description": "EBS 범용 SSD(gp2) 볼륨 스토리지 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"cG7HH0l7J9": {
+			"name": "EBS 마그네틱(표준) 볼륨 스토리지",
+			"description": "EBS 마그네틱(표준) 볼륨 스토리지 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"aW9HH0l8J6": {
+			"name": "EC2-Classic 탄력적 IP 주소",
+			"description": "EC2-Classic 탄력적 IP 주소 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"iH7PP0l7J9": {
+			"name": "EC2 예약 인스턴스 임대",
+			"description": "EC2 예약 인스턴스 임대 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"bW7HH0l7J9": {
+			"name": "지역당 Kinesis 샤드",
+			"description": "지역당 Kinesis 샤드 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"gW7HH0l7J9": {
+			"name": "CloudFormation 스택",
+			"description": "CloudFormation 스택 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"aW7HH0l7J9": {
+			"name": "Auto Scaling 시작 구성",
+			"description": "Auto Scaling 시작 구성 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"fW7HH0l7J9": {
+			"name": "Auto Scaling 그룹",
+			"description": "Auto Scaling 그룹 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"jL7PP0l7J9": {
+			"name": "VPC",
+			"description": "VPC 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"kM7QQ0l7J9": {
+			"name": "VPC 인터넷 게이트웨이",
+			"description": "VPC 인터넷 게이트웨이 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"lN7RR0l7J9": {
+			"name": "EC2-VPC 탄력적 IP 주소",
+			"description": "EC2-VPC 탄력적 IP 주소 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"nO7SS0l7J9": {
+			"name": "IAM 인스턴스 프로파일",
+			"description": "IAM 인스턴스 프로파일 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"oQ7TT0l7J9": {
+			"name": "IAM 역할",
+			"description": "IAM 역할 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"pR7UU0l7J9": {
+			"name": "IAM 정책",
+			"description": "IAM 정책 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"qS7VV0l7J9": {
+			"name": "IAM 사용자",
+			"description": "IAM 사용자 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"rT7WW0l7J9": {
+			"name": "IAM 서버 인증서",
+			"description": "IAM 서버 인증서 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"sU7XX0l7J9": {
+			"name": "IAM 그룹",
+			"description": "IAM 그룹 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"iK7OO0l7J9": {
+			"name": "ELB Classic Load Balancer",
+			"description": "ELB Classic Load Balancer 한도의 80%가 넘는 사용량을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"7fuccf1Mx7": {
+			"name": "RDS 클러스터 역할",
+			"description": "RDS 클러스터 역할 한도의 10 보이는지 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"jtlIMO3qZM": {
+			"name": "RDS 클러스터 파라미터 그룹",
+			"description": "RDS 클러스터 파라미터 그룹 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"gjqMBn6pjz": {
+			"name": "RDS 클러스터",
+			"description": "RDS 클러스터 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"UUDvOa5r34": {
+			"name": "RDS 예약 인스턴스",
+			"description": "RDS 예약 인스턴스 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"jEhCtdJKOY": {
+			"name": "서브넷 그룹당 RDS 서브넷",
+			"description": "서브넷 그룹당 RDS 서브넷 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"dYWBaXaaMM": {
+			"name": "RDS 서브넷 그룹",
+			"description": "RDS 서브넷 그룹 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"3Njm0DJQO9": {
+			"name": "RDS 옵션 그룹",
+			"description": "RDS 옵션 그룹 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"keAhfbH5yb": {
+			"name": "RDS 이벤트 구독",
+			"description": "RDS 이벤트 구독 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"dV84wpqRUs": {
+			"name": "RDS DB 수동 스냅샷",
+			"description": "사용량이 RDS DB 수동 스냅샷 한도의 80%를 초과하는지 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"P1jhKWEmLa": {
+			"name": "RDS 총 스토리지 할당량",
+			"description": "RDS 총 스토리지 할당량 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"jEECYg2YVU": {
+			"name": "RDS DB 파라미터 그룹",
+			"description": "RDS DB 파라미터 그룹 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"pYW8UkYz2w": {
+			"name": "마스터당 RDS 읽기 전용 복제본",
+			"description": "마스터당 RDS 읽기 전용 복제본 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"gfZAn3W7wl": {
+			"name": "RDS DB 보안 그룹",
+			"description": "RDS DB 보안 그룹 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"XG0aXHpIEt": {
+			"name": "RDS DB 인스턴스",
+			"description": "RDS DB 인스턴스 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"dBkuNCvqn5": {
+			"name": "보안 그룹당 RDS 최대 인증",
+			"description": "보안 그룹당 RDS 최대 인증 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"wH7DD0l3J9": {
+			"name": "EBS 처리량에 최적화된 HDD(st1) 볼륨 스토리지",
+			"description": "EBS 처리량에 최적화된 HDD(st1) 볼륨 스토리지 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"gH5CC0e3J9": {
+			"name": "EBS 콜드 HDD(sc1) 볼륨 스토리지",
+			"description": "EBS 콜드 HDD(sc1) 볼륨 스토리지 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"6gtQddfEw6": {
+			"name": "DynamoDB 읽기 용량",
+			"description": "계정당 읽기에 대한 DynamoDB 프로비저닝된 처리량 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"c5ftjdfkMr": {
+			"name": "DynamoDB 쓰기 용량",
+			"description": "계정당 쓰기에 대한 DynamoDB 프로비저닝된 처리량 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"ru4xfcdfMr": {
+			"name": "Route 53 최대 상태 검사",
+			"description": "계정당 Route 53 상태 검사 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"dx3xfcdfMr": {
+			"name": "Route 53 호스팅 영역",
+			"description": "계정당 Route 53 호스팅 영역 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"ty3xfcdfMr": {
+			"name": "Route 53 재사용 가능한 위임 세트",
+			"description": "계정당 Route 53 재사용 가능한 위임 세트 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"dx3xfbjfMr": {
+			"name": "Route 53 트래픽 정책",
+			"description": "계정당 Route 53 트래픽 정책 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"dx8afcdfMr": {
+			"name": "Route 53 트래픽 정책 인스턴스",
+			"description": "계정당 Route 53 트래픽 정책 인스턴스 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"EM8b3yLRTr": {
+			"name": "ELB Application Load Balancer",
+			"description": "ELB Application Load Balancer 한도의 80%가 넘는 사용량을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"8wIqYSt25K": {
+			"name": "ELB Network Load Balancer",
+			"description": "ELB Network Load Balancer 한도의 80%가 넘는 사용량을 검사합니다",
+			"metadata": ["리전", "서비스", "제한 이름", "한도 크기", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"L4dfs2Q4C5": {
+			"name": "사용 중단된 런타임을 사용하는 AWS Lambda 함수",
+			"description": "사용 중단이 다가오거나 사용 중단된 런타임을 사용하도록 구성된 Lambda 함수가 있는지 확인합니다",
+			"metadata": ["상태", "리전", "함수 ARN", "런타임", "사용 중단까지 남은 기간(일)", "사용 중단 날짜", "일일 평균 호출 수", "마지막 새로 고침 시간"],
+			"category": "security",
+			"target": [3]
+		},
+		"L4dfs2Q3C3": {
+			"name": "제한 시간 초과가 과도한 AWS Lambda 함수",
+			"description": "제한 시간 초과 비율이 높아서 고비용을 초래할 수 있는 Lambda 함수를 확인합니다",
+			"metadata": ["상태", "리전", "함수 ARN", "최대 일일 제한 시간 초과 비율", "최대 일일 제한 시간 초과 비율 날짜", "평균 일일 제한 시간 초과 비율", "함수 시간 초과 설정(밀리초)", "일일 손실된 컴퓨팅 비용", "일일 평균 호출 수", "현재 날짜 호출 수", "현재 날짜 제한 시간 초과 비율", "마지막 새로 고침 시간"],
+			"category": "cost_optimizing",
+			"target": [3]
+		},
+		"L4dfs2Q3C2": {
+			"name": "오류 비율이 높은 AWS Lambda 함수",
+			"description": "오류 비율이 높아서 고비용을 초래할 수 있는 Lambda 함수가 있는지 확인합니다",
+			"metadata": ["상태", "리전", "함수 ARN", "최대 일일 오류 비율", "최대 오류 비율 날짜", "평균 일일 오류 비율", "일일 손실된 컴퓨팅 비용", "현재 날짜 호출 수", "현재 날짜 오류 비율", "일일 평균 호출 수", "마지막 새로 고침 시간"],
+			"category": "cost_optimizing",
+			"target": [3]
+		},
+		"L4dfs2Q4C6": {
+			"name": "다중 AZ 중복성이 없는 AWS Lambda VPC 지원 함수",
+			"description": "단일 가용 영역의 서비스 중단에 취약한 VPC 지원 Lambda 함수가 있는지 확인합니다",
+			"metadata": ["상태", "리전", "함수 ARN", "VPC ID", "일일 평균 호출 수", "마지막 새로 고침 시간"],
+			"category": "fault_tolerance",
+			"target": [3]
+		},
+		"dH7RR0l6J3": {
+			"name": "EBS 범용 SSD(gp3) 볼륨 스토리지",
+			"description": "EBS 범용 SSD(gp3) 볼륨 스토리지 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		},
+		"gI7MM0l7J2": {
+			"name": "EBS 프로비저닝된 IOPS SSD(io2) 볼륨 스토리지",
+			"description": "EBS 프로비저닝된 IOPS SSD(io2) 볼륨 스토리지 한도의 사용량이 100%인 대상을 검사합니다",
+			"metadata": ["지역", "서비스", "제한 이름", "한도", "현재 사용량", "상태"],
+			"category": "service_limits",
+			"target": [3, 5, 4]
+		}
+	}
+}

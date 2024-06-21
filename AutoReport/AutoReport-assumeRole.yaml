@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >
+  This is Used by MegazoneCloud for Only create 'Assume Role'. [ver 1.0]
+  If you want use more Event Monitoring, Update file the 'MZC-Event-Monitoring.yaml'
+Resources:
+  CheckResourceRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: mzc-assumerole
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              AWS:
+                - 'arn:aws:iam::FIX_INPUT_Mastar_AccountId:root'
+            Condition:
+              StringEquals:
+                'sts:ExternalId': 'FIX_INPUT_ExternalId'
+      Policies:
+        - PolicyName: MZC-TrustedAdvisor
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'support:DescribeAttachment'
+                  - 'support:DescribeCaseAttributes'
+                  - 'support:DescribeCases'
+                  - 'support:DescribeCommunications'
+                  - 'support:DescribeIssueTypes'
+                  - 'support:DescribeServices'
+                  - 'support:DescribeSeverityLevels'
+                  - 'support:DescribeSupportLevel'
+                  - 'support:DescribeTrustedAdvisorCheckRefreshStatuses'
+                  - 'support:DescribeTrustedAdvisorCheckResult'
+                  - 'support:DescribeTrustedAdvisorChecks'
+                  - 'support:DescribeTrustedAdvisorCheckSummaries'
+                  - 'support:SearchForCases'
+                Resource:
+                  - '*'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/ReadOnlyAccess'
+        - 'arn:aws:iam::aws:policy/AWSCloudFormationFullAccess'
